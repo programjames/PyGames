@@ -4,7 +4,8 @@ pygame.init()
 ## Need to make a bullet image, and then make it into an array and save it here (so it will not have to load an external file).
 ## Also need to make the image.
 ## Same with the character image (perhaps a differently colored bullet?)
-bullet_img=None
+bullet_img=pygame.Surface((1,1))
+bullet_img.fill((0,0,255))
 character_img=None
 class Bullet():
     def __init__(self,pos,dir,speed,img,width,height):
@@ -56,8 +57,9 @@ class Character():
     def blit(self,screen):
         screen.blit(self.img,self.pos)
         screen.blit(self.img,self.pos2)
-    def change_dir(self,new_dir):
-        self.dir=new_dir
+    def update_dir(self):
+        x,y=pygame.mouse.get_pos()
+        self.dir=math.atan2(y-pos[1],x-pos[0])
 def make_bullet():
     global w,h
     pos=[int(math.random()*w),int(math.random()*h)]
@@ -67,3 +69,4 @@ def make_bullet():
 w,h=500,500
 screen=pygame.display.set_mode((w,h))
 bullet_list=[make_bullet() for i in range(10)]
+char=Character(make_bullet())
