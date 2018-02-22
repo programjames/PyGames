@@ -22,6 +22,13 @@ class Bullet():
         self.dy=math.cos(dir*math.pi/180)
         self.w=width
         self.h=height
+        self.points=[]
+        self.img_width=self.img.get_width()
+        self.img_height=self.img.get_height()
+        for x in range(self.img_width):
+            for y in range(self.img_height):
+                if self.img.get_at((x,y))[3]!=0:
+                    self.points.append([x,y])
     def move(self):
         self.pos[0]+=self.dx*self.speed
         self.pos[1]+=self.dy*self.speed
@@ -47,6 +54,13 @@ class Character():
         self.dy=math.cos(dir*math.pi/180)
         self.w=width
         self.h=height
+        self.points=[]
+        self.img_width=self.img.get_width()
+        self.img_height=self.img.get_height()
+        for x in range(self.img_width):
+            for y in range(self.img_height):
+                if self.img.get_at((x,y))[3]!=0:
+                    self.points.append([x,y])
     def move(self):
         self.pos[0]+=self.dx*self.speed
         self.pos[1]+=self.dy*self.speed
@@ -60,6 +74,13 @@ class Character():
     def update_dir(self):
         x,y=pygame.mouse.get_pos()
         self.dir=math.atan2(y-pos[1],x-pos[0])
+    def test_collide(self,b_list):
+        for bullet in b_list:
+            for point in bullet.points:
+                for p in self.points:
+                    if p[0]+self.pos[0]==point[0]+bullet.pos[0] and p[1]+self.pos[1]==point[1]+bullet.pos[1]:
+                        return True
+        return False
 def make_bullet():
     global w,h
     pos=[int(math.random()*w),int(math.random()*h)]
@@ -69,4 +90,15 @@ def make_bullet():
 w,h=500,500
 screen=pygame.display.set_mode((w,h))
 bullet_list=[make_bullet() for i in range(10)]
-char=Character(make_bullet())
+player=Character(make_bullet())
+while True:
+    pygame.display.fill((255,255,255))
+    for bullet in bullet_list:
+        bullet.move()
+        bullet.blit(screen)
+    player.update_dir()
+    player.move()
+    player.blit(screen)
+    pygame.display.update()
+    if player.test_collide(b_list):
+        break
